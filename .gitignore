@@ -1,0 +1,14 @@
+REST_API_GATEWAY/package-lock.json
+REST_API_GATEWAY/node_modules
+
+USER_API/package-lock.json
+USER_API/node_modules
+
+STORAGE_API/package-lock.json
+STORAGE_API/node_modules
+
+ORDER_API/package-lock.json
+ORDER_API/node_modules
+
+DELIVERY_AND_BILLING_API/package-lock.json
+DELIVERY_AND_BILLING_API/node_modules
