@@ -1,0 +1,52 @@
+version: '1.0'
+services:
+  
+  rest_api:
+    container_name: "REST_API_GATEWAY"
+    ports:
+      - "5000:5000"
+    build: 
+      context: ../REST_API_GATEWAY/
+    volumes:
+      - ../REST_API_GATEWAY/:/app
+      - /app/node_modules
+
+  user:
+    container_name: "USER-API"
+    ports:
+      - "5001:5001"
+    build: 
+      context: ../USER_API/
+    volumes:
+      - ../USER_API/:/app
+      - /app/node_modules
+
+  storage:
+    container_name: "STORAGE-API"
+    ports:
+      - "5002:5002"
+    build: 
+      context: ../STORAGE_API/
+    volumes:
+      - ../STORAGE_API/:/app
+      - /app/node_modules
+
+  order:
+    container_name: "ORDER-API"
+    ports:
+      - "5003:5003"
+    build: 
+      context: ../ORDER_API/
+    volumes:
+      - ../ORDER_API/:/app
+      - /app/node_modules
+
+  delivery_and_billing:
+    container_name: "DELIVERY-AND-BILLING-API"
+    ports:
+      - "5004:5004"
+    build: 
+      context: ../DELIVERY_AND_BILLING_API/
+    volumes:
+      - ../DELIVERY_AND_BILLING_API/:/app
+      - /app/node_modules
