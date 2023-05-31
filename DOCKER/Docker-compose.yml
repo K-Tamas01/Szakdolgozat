@@ -1,8 +1,7 @@
-version: '1.0'
+version: '3.9'
 services:
 
   user:
-    image: user:latest
     container_name: "USER-API"
     ports:
       - "5001:5001"
@@ -11,9 +10,11 @@ services:
     volumes:
       - ../USER_API/:/app
       - /app/node_modules
+    depends_on:
+      mongo:
+        condition: service_healthy
 
   storage:
-    image: storage:latest
     container_name: "STORAGE-API"
     ports:
       - "5002:5002"
@@ -22,9 +23,11 @@ services:
     volumes:
       - ../STORAGE_API/:/app
       - /app/node_modules
+    depends_on:
+      mongo:
+        condition: service_healthy
 
   order:
-    image: order:latest
     container_name: "ORDER-API"
     ports:
       - "5003:5003"
@@ -33,9 +36,11 @@ services:
     volumes:
       - ../ORDER_API/:/app
       - /app/node_modules
+    depends_on:
+      mongo:
+        condition: service_healthy
 
   delivery_and_billing:
-    image: delivery_and_billing:latest
     container_name: "DELIVERY-AND-BILLING-API"
     ports:
       - "5004:5004"
@@ -44,6 +49,9 @@ services:
     volumes:
       - ../DELIVERY_AND_BILLING_API/:/app
       - /app/node_modules
+    depends_on:
+      mongo:
+        condition: service_healthy
 
   nginx:
     image: nginx
@@ -54,15 +62,39 @@ services:
       - "80:80"
 
   mongo:
-    image: mongo:latest
-    container_name: mongo
+    container_name: mongo-database
+    build: 
+      context: "./mongo"
+    env_file:
+      - ./env/mongodb.dev.env
     ports:
       - "27017:27017"
-    build: 
-      context: ./mongo/
     volumes:
-      - mongo_data:/data/db
+      - ./mongo/Init/init.js:/docker-entrypoint-initdb.d/init.js
+      - ./mongo_data:/data/db
     restart: always
+    healthcheck:
+      test: ["CMD", "mongo", "-u", "root", "-p", "password", "--quiet", "--eval", "'db.stats().ok'"]
+      interval: 5s
+
+
+      
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    ports:
+      - "3010:8010"
+    env_file:
+      - ./env/mongoexpress.dev.env
+    depends_on:
+      mongo:
+        condition: service_healthy
+
 
 volumes:
   mongo_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/mongo_data
+      o: bind
