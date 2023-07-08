@@ -62,39 +62,30 @@ services:
       - "80:80"
 
   mongo:
-    container_name: mongo-database
+    container_name: mongo
     build: 
-      context: "./mongo"
+      context: ./mongo/
+    volumes:
+      - mongo_data:/data/db:Z
+      - ./mongo/Init/init.js:/docker-entrypoint-initdb.d/init.js
     env_file:
       - ./env/mongodb.dev.env
     ports:
       - "27017:27017"
-    volumes:
-      - ./mongo/Init/init.js:/docker-entrypoint-initdb.d/init.js
-      - ./mongo_data:/data/db
-    restart: always
     healthcheck:
-      test: ["CMD", "mongo", "-u", "root", "-p", "password", "--quiet", "--eval", "'db.stats().ok'"]
+      test: ["CMD", "mongo", "-u", "adminUser", "-p", "password123", "--quiet", "--eval", "'db.stat().ok'"]
       interval: 5s
 
-
-      
   mongo-express:
     image: mongo-express
     container_name: mongo-express
-    ports:
-      - "3010:8010"
     env_file:
       - ./env/mongoexpress.dev.env
+    ports:
+      - "3010:8081"
     depends_on:
       mongo:
         condition: service_healthy
 
-
 volumes:
   mongo_data:
-    driver: local
-    driver_opts:
-      type: none
-      device: $PWD/mongo_data
-      o: bind
