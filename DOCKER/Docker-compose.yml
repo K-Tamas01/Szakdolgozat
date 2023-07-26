@@ -10,6 +10,8 @@ services:
     volumes:
       - ../USER_API/:/app
       - /app/node_modules
+    env_file:
+      - ./env/user-api.dev.env
     depends_on:
       mongo:
         condition: service_healthy
@@ -23,6 +25,8 @@ services:
     volumes:
       - ../STORAGE_API/:/app
       - /app/node_modules
+    env_file:
+      - ./env/storage.dev.env
     depends_on:
       mongo:
         condition: service_healthy
@@ -36,6 +40,8 @@ services:
     volumes:
       - ../ORDER_API/:/app
       - /app/node_modules
+    env_file:
+      - ./env/order.dev.env
     depends_on:
       mongo:
         condition: service_healthy
@@ -49,6 +55,8 @@ services:
     volumes:
       - ../DELIVERY_AND_BILLING_API/:/app
       - /app/node_modules
+    env_file:
+      - ./env/delivery.dev.env
     depends_on:
       mongo:
         condition: service_healthy
