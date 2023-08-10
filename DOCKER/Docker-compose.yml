@@ -46,14 +46,14 @@ services:
       mongo:
         condition: service_healthy
 
-  delivery_and_billing:
-    container_name: "DELIVERY-AND-BILLING-API"
+  delivery:
+    container_name: "DELIVERY-API"
     ports:
       - "5004:5004"
     build: 
-      context: ../DELIVERY_AND_BILLING_API/
+      context: ../DELIVERY_API/
     volumes:
-      - ../DELIVERY_AND_BILLING_API/:/app
+      - ../DELIVERY_API/:/app
       - /app/node_modules
     env_file:
       - ./env/delivery.dev.env
@@ -69,7 +69,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - delivery_and_billing
+      - delivery
       - user
       - order
       - storage
