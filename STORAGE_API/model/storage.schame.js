@@ -7,7 +7,8 @@ const storageSchema = new Schema({
     quantity: Number,
     unitPrice: Number,
     category: String,
-    supplier: String
+    supplier: String,
+    location: String
 },
 {
   collection: 'storage'
