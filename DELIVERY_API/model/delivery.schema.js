@@ -2,7 +2,8 @@ const { Schema, model } = require('mongoose');
 
 const deliverySchema = new Schema({
     deliveryNumber: String,
-    customerName: String,
+    customerFirstName: String,
+    customerLastName: String,
     customerId: String,
     delivery_date: Date,
     status: String,
@@ -11,6 +12,7 @@ const deliverySchema = new Schema({
         productName: String,
         quantity: Number
     }],
+    city: String,
     deliveryAddress: String
 },
 {
