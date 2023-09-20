@@ -68,7 +68,6 @@ data:
       bindIp: 0.0.0.0
     security:
       authorization: enabled
-    initScript: /docker-entrypoint-initdb.d/init.js
   init.js: |
     db = new Mongo().getDB("Storage-Manager-System");
     db.createCollection("users", {capped: false});
