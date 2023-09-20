@@ -1,0 +1,86 @@
+# NGINX CONFIGMAP
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configmap
+data:
+  nginx.conf: |
+    upstream user_api {
+        server user-api:5001;
+    }
+
+    upstream delivery_api {
+        server delivery-api:5004;
+    }
+
+    upstream order_api {
+        server order-api:5003;
+    }
+
+    upstream storage_api {
+        server storage-api:5002;
+    }
+
+    server {
+        listen 80;
+
+        location ~ ^/api/user/(?<endpoint>.*) {
+            proxy_pass http://user_api/api/user/$endpoint$is_args$args;
+        }
+
+        location ~ ^/api/delivery/(?<endpoint>.*) {
+            proxy_pass http://delivery_api/api/delivery/$endpoint$is_args$args;
+        }
+
+        location ~ ^/api/order/(?<endpoint>.*) {
+            proxy_pass http://order_api/api/order/$endpoint$is_args$args;
+        }
+
+        location ~ ^/api/storage/(?<endpoint>.*) {
+            proxy_pass http://storage_api/api/storage/$endpoint$is_args$args;
+        }
+    }
+
+---
+# NGINX SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+# NGINX DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/conf.d
+      volumes:
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-configmap
