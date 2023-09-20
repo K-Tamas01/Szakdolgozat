@@ -1,0 +1,63 @@
+#mongoose secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongodb-secret
+type: Opaque
+data:
+  mongodb-username: YWRtaW5Vc2Vy
+  mongodb-password: cGFzc3dvcmQxMjM=
+
+---
+#mongoose configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongodb-express-configmap
+data:
+  ME_CONFIG_MONGODB_SERVER: "mongodb-service"
+  ME_CONFIG_MONGODB_PORT: "27017"
+  ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+
+---
+#mongoose service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-express-service
+spec:
+  selector:
+    app: mongodb-express
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+      nodePort: 30010
+  type: NodePort
+
+---
+#mongoose deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: mongodb-express-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-express
+  template:
+    metadata:
+      labels:
+        app: mongodb-express
+    spec:
+      containers:
+        - name: mongodb-express
+          image: mongo-express:latest
+          ports:
+            - containerPort: 8081
+          envFrom:
+            - secretRef:
+                name: mongodb-secret
+            - configMapRef:
+                name: mongodb-express-configmap
