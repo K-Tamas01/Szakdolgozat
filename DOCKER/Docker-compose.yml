@@ -2,7 +2,8 @@ version: '3.9'
 services:
 
   user:
-    container_name: "USER-API"
+    container_name: "user-api"
+    image: user:1.0.0
     ports:
       - "5001:5001"
     build: 
@@ -17,7 +18,8 @@ services:
         condition: service_healthy
 
   storage:
-    container_name: "STORAGE-API"
+    container_name: "storage-api"
+    image: storage:1.0.0
     ports:
       - "5002:5002"
     build: 
@@ -32,7 +34,8 @@ services:
         condition: service_healthy
 
   order:
-    container_name: "ORDER-API"
+    container_name: "order-api"
+    image: order:1.0.0
     ports:
       - "5003:5003"
     build: 
@@ -47,7 +50,8 @@ services:
         condition: service_healthy
 
   delivery:
-    container_name: "DELIVERY-API"
+    container_name: "delivery-api"
+    image: delivery:1.0.0
     ports:
       - "5004:5004"
     build: 
