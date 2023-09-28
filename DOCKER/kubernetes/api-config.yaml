@@ -1,0 +1,289 @@
+#ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+data:
+  database_url: mongodb://rootAdmin:rootAdmin123@mongodb-service:27017/Storage-Manager-System
+  user_port: "5001"
+  storage_port: "5002"
+  order_port: "5003"
+  delivery_port: "5004"
+
+---
+#User Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-api
+spec:
+  selector:
+    app: user-api
+  ports:
+    - protocol: TCP
+      port: 5001
+      targetPort: 5001
+      name: user-api
+
+---
+#Storage Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-api
+spec:
+  selector:
+    app: storage-api
+  ports:
+    - protocol: TCP
+      port: 5002
+      targetPort: 5002
+      name: storage-api
+
+---
+#Order Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-api
+spec:
+  selector:
+    app: order-api
+  ports:
+    - protocol: TCP
+      port: 5003
+      targetPort: 5003
+      name: order-api
+
+---
+#Delivery Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: delivery-api
+spec:
+  selector:
+    app: delivery-api
+  ports:
+    - protocol: TCP
+      port: 5004
+      targetPort: 5004
+      name: delivery-api
+
+---
+#Deploy User-api
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-api
+  template:
+    metadata:
+      labels:
+        app: user-api
+    spec:
+      containers:
+        - name: user-api
+          image: korom/szakdolgozat:user
+          ports:
+            - containerPort: 5001
+          env:
+            - name: MONGO_DB_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: database_url
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: user_port
+
+---
+#Deploy Storage
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: storage-api
+  template:
+    metadata:
+      labels:
+        app: storage-api
+    spec:
+      containers:
+        - name: storage-api
+          image: korom/szakdolgozat:storage
+          ports:
+            - containerPort: 5002
+          env:
+            - name: MONGO_DB_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: database_url
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: storage_port
+
+---
+#Deploy Order
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-api
+  template:
+    metadata:
+      labels:
+        app: order-api
+    spec:
+      containers:
+        - name: order-api
+          image: korom/szakdolgozat:order
+          ports:
+            - containerPort: 5003
+          env:
+            - name: MONGO_DB_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: database_url
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: order_port
+
+---
+#Deploy Delivery
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: delivery-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: delivery-api
+  template:
+    metadata:
+      labels:
+        app: delivery-api
+    spec:
+      containers:
+        - name: delivery-api
+          image: korom/szakdolgozat:delivery
+          ports:
+            - containerPort: 5004
+          env:
+            - name: MONGO_DB_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: database_url
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: delivery_port
+      imagePullSecrets:
+        - name: api-secret
+
+---
+#Scale Config User
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: user-api-scale
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: user-api-deployment
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+
+---
+#Scale Config Storage
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: storage-api-scale
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: storage-api-deployment
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+
+---
+#Scale Config Order
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: order-api-scale
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: order-api-deployment
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+
+---
+#Scale Config Delivery
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: delivery-api-scale
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: delivery-api-deployment
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
