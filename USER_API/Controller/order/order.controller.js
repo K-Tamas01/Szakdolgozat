@@ -50,7 +50,7 @@ const deleteOrder = async (req, res) => {
         zipCode: getUser.zipCode
     }
 
-    fetch('http://localhost:80/api/order/delete-order', {
+    fetch('http://nginx:80/api/order/delete-order', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -64,7 +64,7 @@ const deleteOrder = async (req, res) => {
 
 const getOrders = async (req, res) => {
     const user_id = req.params.id
-    fetch('http://localhost:80/api/order/get-orders',{
+    fetch('http://nginx:80/api/order/get-orders',{
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify({userId: user_id})
@@ -80,7 +80,7 @@ const getOrder = async (req, res) => {
         userId: user_id,
         orderNumber
     }
-    fetch('http://localhost:80/api/order/get-orders',{
+    fetch('http://nginx:80/api/order/get-orders',{
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify(data)
