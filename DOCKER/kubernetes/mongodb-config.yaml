@@ -118,7 +118,7 @@ data:
         productName: "SlimBook Air",
         productCode: "SBA2023",
         description: "Vékony és könnyű noteszgép mindennapi használatra.",
-        quantity: 45,
+        quantity: 50000,
         unitPrice: 950,
         category: "Elektronika",
         supplier: "TechMánia",
@@ -138,7 +138,7 @@ data:
         productName: "High-End Hangprojektor",
         productCode: "HPJ700",
         description: "Virtuális térhangzás élményt nyújtó hangprojektor.",
-        quantity: 5,
+        quantity: 50000,
         unitPrice: 1200,
         category: "Elektronika",
         supplier: "AudioMágia",
@@ -165,6 +165,18 @@ data:
         location: "E4"
       }
     ]);
+
+    db.users.insertOne({
+      _id: new ObjectId("651a75096fff21c7751b38bf"),
+      email: "korom01tamas@gmail.com",
+      firstName: "Tamás",
+      lastName: "Korom",
+      password: "480aeb42d7b1e3937fe8db12a1ffe6d8",
+      address: "S. N. K. U. 2",
+      city: "Miskolc",
+      mobile: "06209993596",
+      zipCode: "3527"
+    });
 
 ---
 # Mongodb Secret

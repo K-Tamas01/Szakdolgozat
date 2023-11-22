@@ -128,3 +128,15 @@ db.storage.insertMany([
         location: "E4"
     }
 ]);
+
+db.users.insertOne({
+    _id: new ObjectId("651a75096fff21c7751b38bf"),
+    email: "korom01tamas@gmail.com",
+    firstName: "Tamás",
+    lastName: "Korom",
+    password: "480aeb42d7b1e3937fe8db12a1ffe6d8",
+    address: "S. N. K. U. 2",
+    city: "Miskolc",
+    mobile: "06209993596",
+    zipCode: "3527"
+  });

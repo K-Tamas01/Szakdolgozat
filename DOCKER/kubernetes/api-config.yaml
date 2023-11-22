@@ -75,7 +75,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-api-deployment
+  name: user-api
 spec:
   replicas: 1
   selector:
@@ -102,13 +102,18 @@ spec:
                 configMapKeyRef:
                   name: api-config
                   key: user_port
+          resources:
+            limits:
+              cpu: 300m
+            requests:
+              cpu: 200m
 
 ---
 #Deploy Storage
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: storage-api-deployment
+  name: storage-api
 spec:
   replicas: 1
   selector:
@@ -135,13 +140,18 @@ spec:
                 configMapKeyRef:
                   name: api-config
                   key: storage_port
+          resources:
+            limits:
+              cpu: 300m
+            requests:
+              cpu: 200m
 
 ---
 #Deploy Order
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: order-api-deployment
+  name: order-api
 spec:
   replicas: 1
   selector:
@@ -168,13 +178,18 @@ spec:
                 configMapKeyRef:
                   name: api-config
                   key: order_port
+          resources:
+            limits:
+              cpu: 300m
+            requests:
+              cpu: 200m
 
 ---
 #Deploy Delivery
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: delivery-api-deployment
+  name: delivery-api
 spec:
   replicas: 1
   selector:
@@ -201,8 +216,11 @@ spec:
                 configMapKeyRef:
                   name: api-config
                   key: delivery_port
-      imagePullSecrets:
-        - name: api-secret
+          resources:
+            limits:
+              cpu: 300m
+            requests:
+              cpu: 200m
 
 ---
 #Scale Config User
@@ -214,7 +232,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: user-api-deployment
+    name: user-api
   minReplicas: 1
   maxReplicas: 2
   metrics:
@@ -223,7 +241,7 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50
+          averageUtilization: 10
 
 ---
 #Scale Config Storage
@@ -235,7 +253,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: storage-api-deployment
+    name: storage-api
   minReplicas: 1
   maxReplicas: 2
   metrics:
@@ -244,7 +262,7 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50
+          averageUtilization: 10
 
 ---
 #Scale Config Order
@@ -256,7 +274,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: order-api-deployment
+    name: order-api
   minReplicas: 1
   maxReplicas: 2
   metrics:
@@ -265,7 +283,7 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50
+          averageUtilization: 10
 
 ---
 #Scale Config Delivery
@@ -277,7 +295,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: delivery-api-deployment
+    name: delivery-api
   minReplicas: 1
   maxReplicas: 2
   metrics:
@@ -286,4 +304,4 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50
+          averageUtilization: 10
