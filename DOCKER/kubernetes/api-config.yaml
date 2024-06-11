@@ -88,7 +88,7 @@ spec:
     spec:
       containers:
         - name: user-api
-          image: user:1.0.0
+          image: korom/szakdolgozat:user
           ports:
             - containerPort: 5001
           env:
@@ -126,7 +126,7 @@ spec:
     spec:
       containers:
         - name: storage-api
-          image: storage:1.0.0
+          image: korom/szakdolgozat:storage
           ports:
             - containerPort: 5002
           env:
@@ -164,7 +164,7 @@ spec:
     spec:
       containers:
         - name: order-api
-          image: order:1.0.0
+          image: korom/szakdolgozat:order
           ports:
             - containerPort: 5003
           env:
@@ -202,7 +202,7 @@ spec:
     spec:
       containers:
         - name: delivery-api
-          image: delivery:1.0.0
+          image: korom/szakdolgozat:delivery
           ports:
             - containerPort: 5004
           env:

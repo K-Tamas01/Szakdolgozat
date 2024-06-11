@@ -11,6 +11,17 @@ spec:
       storage: 5Gi
 
 ---
+# Mongodb Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongodb-secret
+type: Opaque
+data:
+  mongodb-root-password: cGFzc3dvcmQxMjM=
+  mongodb-root-username: YWRtaW5Vc2Vy
+
+---
 # Mongodb Service
 apiVersion: v1
 kind: Service
@@ -177,17 +188,6 @@ data:
       mobile: "06209993596",
       zipCode: "3527"
     });
-
----
-# Mongodb Secret
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mongodb-secret
-type: Opaque
-data:
-  mongodb-root-password: cGFzc3dvcmQxMjM=
-  mongodb-root-username: YWRtaW5Vc2Vy
 
 ---
 # Mongodb Statefulset
